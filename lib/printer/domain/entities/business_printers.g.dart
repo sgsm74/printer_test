@@ -19,7 +19,7 @@ class BusinessPrintersAdapter extends TypeAdapter<BusinessPrinters> {
     return BusinessPrinters(
       id: fields[0] as String,
       printerName: fields[1] as String,
-      usecaseName: fields[2] as String?,
+      usecaseName: fields[2] as String,
     );
   }
 

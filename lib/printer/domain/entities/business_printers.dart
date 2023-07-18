@@ -8,7 +8,7 @@ class BusinessPrinters extends Equatable {
   const BusinessPrinters({
     required this.id,
     required this.printerName,
-    this.usecaseName,
+    required this.usecaseName,
   });
 
   // in usb printers equals to url and in network printers equals to macAddress
@@ -17,7 +17,7 @@ class BusinessPrinters extends Equatable {
   @HiveField(1)
   final String printerName;
   @HiveField(2)
-  final String? usecaseName;
+  final String usecaseName;
 
   @override
   List<Object?> get props => [id];

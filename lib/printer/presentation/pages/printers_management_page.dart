@@ -14,6 +14,11 @@ class AddedPrintersWidget extends StatefulWidget {
 
 class _AddedPrintersWidgetState extends State<AddedPrintersWidget> {
   List<BusinessPrinters> addedPrinters = [];
+  @override
+  void initState() {
+    getPrinters(context, addedPrinters);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +61,7 @@ class _AddedPrintersWidgetState extends State<AddedPrintersWidget> {
             child: const Icon(Icons.refresh),
             onPressed: () => getPrinters(context, addedPrinters),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
       },
     );
@@ -75,7 +80,6 @@ class _AddedPrintersWidgetState extends State<AddedPrintersWidget> {
         itemCount: printers.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            height: 35,
             alignment: Alignment.center,
             decoration: const BoxDecoration(
               border: Border(
@@ -84,7 +88,7 @@ class _AddedPrintersWidgetState extends State<AddedPrintersWidget> {
             ),
             child: ListTile(
               leading: const Icon(Icons.print),
-              title: Text(printers[index].usecaseName!),
+              title: Text(printers[index].usecaseName),
               subtitle: Row(
                 children: [
                   Text(printers[index].printerName),
@@ -107,12 +111,6 @@ class _AddedPrintersWidgetState extends State<AddedPrintersWidget> {
                         getPrinters(context, addedPrinters);
                       },
                     ),
-                    const SizedBox(width: 5),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => addPrinter(
-                          context, printers[index], true, addedPrinters),
-                    )
                   ],
                 ),
               ),
@@ -134,6 +132,11 @@ class DiscoveredPrintersWidget extends StatefulWidget {
 
 class _DiscoveredPrintersWidgetState extends State<DiscoveredPrintersWidget> {
   List<BusinessPrinters> discoveredPrinters = [];
+  @override
+  void initState() {
+    BlocProvider.of<PrinterBloc>(context).add(ScanPrintersEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +182,7 @@ class _DiscoveredPrintersWidgetState extends State<DiscoveredPrintersWidget> {
             onPressed: () =>
                 BlocProvider.of<PrinterBloc>(context).add(ScanPrintersEvent()),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
       },
     );
@@ -198,8 +201,7 @@ class _DiscoveredPrintersWidgetState extends State<DiscoveredPrintersWidget> {
         itemCount: printers.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-            onTap: () =>
-                addPrinter(context, printers[index], false, discoveredPrinters),
+            onTap: () => addPrinter(context, printers[index], false, []),
             child: Container(
               alignment: Alignment.center,
               decoration: const BoxDecoration(
