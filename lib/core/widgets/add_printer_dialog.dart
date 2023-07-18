@@ -82,7 +82,7 @@ class _AddPrinterDialogState extends State<AddPrinterDialog> {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                  onPressed: () => _validator(), child: const Text('ذخیره'))
+                  onPressed: () => _validator(), child: const Text('Save'))
             ],
           ),
         ),

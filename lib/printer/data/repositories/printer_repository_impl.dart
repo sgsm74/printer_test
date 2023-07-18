@@ -54,6 +54,7 @@ class PrinterRepositoryImpl extends PrinterRepository {
             BusinessPrinters(
               id: element.url,
               printerName: element.name,
+              usecaseName: element.name,
             ),
           );
         }

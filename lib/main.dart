@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:printer_test/core/utils/utils.dart';
+import 'package:printer_test/printer/domain/entities/business_printers.dart';
 import 'package:printer_test/printer/presentation/pages/printers_management_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'printer/presentation/bloc/printer_bloc.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: const TabBarView(
             children: [
-              Icon(Icons.directions_car),
+              MainPage(),
               DiscoveredPrintersWidget(),
               AddedPrintersWidget(),
             ],
@@ -65,5 +69,66 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<BusinessPrinters> addedPrinters = [];
+  final textEditingController = TextEditingController();
+  @override
+  void initState() {
+    getPrinters(context, addedPrinters);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<PrinterBloc, PrinterState>(
+      listener: (context, state) {
+        if (state is GetPrintersState) {
+          addedPrinters = state.printers;
+        } else if (state is PrintersError) {}
+      },
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: textEditingController,
+                decoration: const InputDecoration(border: OutlineInputBorder()),
+              ),
+              ElevatedButton(
+                  onPressed: () => _startPrinting(context),
+                  child: const Text('Print'))
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _startPrinting(BuildContext context) async {
+    final doc = pw.Document();
+    doc.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.roll80,
+        build: (context) {
+          return pw.Center(child: pw.Text(textEditingController.text));
+        },
+      ),
+    );
+    for (var printer in addedPrinters) {
+      print(printer);
+      BlocProvider.of<PrinterBloc>(context)
+          .add(StartPrintingEvent(printer: printer, pdf: await doc.save()));
+    }
   }
 }
