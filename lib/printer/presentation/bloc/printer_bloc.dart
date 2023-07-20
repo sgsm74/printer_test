@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:printer_test/printer/domain/entities/receipt.dart';
+import 'package:printer_test/printer/domain/usecases/socket_connection.dart';
 
 import '../../../core/usecase/usecase.dart';
 import '../../domain/entities/business_printers.dart';
@@ -23,6 +25,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     required this.scanPrinters,
     required this.deletePrinter,
     required this.startPrinting,
+    required this.socketConnectionUseCase,
   }) : super(PrinterInitial()) {
     on<PrinterEvent>(
       (event, emit) async {
@@ -36,6 +39,8 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
           await _onDeletePrinterEvent(event, emit);
         } else if (event is StartPrintingEvent) {
           await _onStartPrintingEvent(event, emit);
+        } else if (event is SocketConnectionEvent) {
+          await _onSocketConnectionEvent(event, emit);
         }
       },
       transformer: sequential(),
@@ -47,7 +52,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
   final ScanPrinters scanPrinters;
   final StartPrinting startPrinting;
   final DeletePrinter deletePrinter;
-
+  final SocketConnection socketConnectionUseCase;
   Future<void> _onScanPrintersEvent(
     ScanPrintersEvent event,
     Emitter<PrinterState> emit,
@@ -117,5 +122,13 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
         (ok) => StartPrintingState(),
       ),
     );
+  }
+
+  Future<void> _onSocketConnectionEvent(
+      SocketConnectionEvent event, Emitter<PrinterState> emit) async {
+    final result = await socketConnectionUseCase(
+        SocketConnectionParams(ip: event.ip, port: event.port));
+    emit(result.fold((error) => PrintersError(message: error.message),
+        (stream) => SocketConnectionSuccessfulState(stream: stream)));
   }
 }

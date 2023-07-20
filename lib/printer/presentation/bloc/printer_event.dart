@@ -32,3 +32,15 @@ class StartPrintingEvent extends PrinterEvent {
   @override
   List<Object> get props => [printer, pdf];
 }
+
+class SocketConnectionEvent extends PrinterEvent {
+  const SocketConnectionEvent({
+    required this.ip,
+    required this.port,
+  });
+  final String ip;
+  final String port;
+
+  @override
+  List<Object> get props => [ip, port];
+}
