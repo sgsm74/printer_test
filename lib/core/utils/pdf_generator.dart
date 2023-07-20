@@ -1,14 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printer_test/printer/domain/entities/item.dart';
 import 'package:printer_test/printer/domain/entities/receipt.dart';
 
-Future<Uint8List> printReceipt({required Receipt order}) async {
+Future<Uint8List> printReceipt({Receipt? order}) async {
   var font = await rootBundle.load('assets/fonts/Dana-FaNum-Regular.ttf');
   var myFont = pw.Font.ttf(font);
   var myStyle = pw.TextStyle(
-    fontSize: 9,
+    fontSize: 8.5,
     font: myFont,
   );
   final pdf = pw.Document();
@@ -17,34 +16,34 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
   List<pw.Widget> orderItemsHeader = [
     pw.Container(
       alignment: pw.Alignment.center,
-      width: PdfPageFormat.roll80.width / 6,
+      width: PdfPageFormat.roll80.width / 7,
       child: pw.Text(
         'جمع‌کل',
-        style: myStyle.copyWith(color: PdfColors.white),
+        style: myStyle.copyWith(color: PdfColors.black),
       ),
     ),
     pw.Container(
       alignment: pw.Alignment.center,
-      width: PdfPageFormat.roll80.width / 6,
+      width: PdfPageFormat.roll80.width / 7,
       child: pw.Text(
         'تخفیف',
-        style: myStyle.copyWith(color: PdfColors.white),
+        style: myStyle.copyWith(color: PdfColors.black),
       ),
     ),
     pw.Container(
       alignment: pw.Alignment.center,
-      width: PdfPageFormat.roll80.width / 6,
+      width: PdfPageFormat.roll80.width / 7,
       child: pw.Text(
         'قیمت‌کالا',
-        style: myStyle.copyWith(color: PdfColors.white),
+        style: myStyle.copyWith(color: PdfColors.black),
       ),
     ),
     pw.Container(
       alignment: pw.Alignment.center,
-      width: PdfPageFormat.roll80.width / 6,
+      width: PdfPageFormat.roll80.width / 7,
       child: pw.Text(
         'تعداد',
-        style: myStyle.copyWith(color: PdfColors.white),
+        style: myStyle.copyWith(color: PdfColors.black),
       ),
     ),
     pw.Container(
@@ -52,16 +51,16 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
       width: PdfPageFormat.roll80.width / 3,
       child: pw.Text(
         'نام کالا',
-        style: myStyle.copyWith(color: PdfColors.white),
+        style: myStyle.copyWith(color: PdfColors.black),
       ),
     ),
   ];
 
   /// Genertate items
-  itemsList(OrderItem element) {
+  itemsList() {
     List<pw.Widget> itemBuilderList = [
       pw.Container(
-        width: PdfPageFormat.roll80.width / 6,
+        width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
           '20000',
@@ -70,7 +69,7 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
         ),
       ),
       pw.Container(
-        width: PdfPageFormat.roll80.width / 6,
+        width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
           '20000',
@@ -79,7 +78,7 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
         ),
       ),
       pw.Container(
-        width: PdfPageFormat.roll80.width / 6,
+        width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
           '20000',
@@ -88,7 +87,7 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
         ),
       ),
       pw.Container(
-        width: PdfPageFormat.roll80.width / 6,
+        width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
           '1',
@@ -98,8 +97,7 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
       ),
       pw.Container(
         width: PdfPageFormat.roll80.width / 3,
-        alignment: pw.Alignment.centerRight,
-        padding: const pw.EdgeInsets.only(right: 9),
+        alignment: pw.Alignment.center,
         child: pw.Column(
           children: [
             pw.Text(
@@ -117,24 +115,23 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
 
   /// Generate modifiers
   List<pw.Widget> _itemsBuilder() {
-    List<pw.Widget> _items = [];
+    List<pw.Widget> items = [];
 
     for (int i = 0; i < 3; i++) {
-      var orderItem;
-      _items.add(
+      items.add(
         pw.Container(
           decoration: pw.BoxDecoration(border: pw.Border.all()),
           child: pw.Column(
             children: [
               pw.Row(
-                children: itemsList(orderItem),
+                children: itemsList(),
               ),
             ],
           ),
         ),
       );
     }
-    return _items;
+    return items;
   }
 
   /// Bill body section
@@ -145,15 +142,10 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
         decoration: pw.BoxDecoration(border: pw.Border.all()),
         child: pw.Column(
           children: [
-            pw.Text(
-              'sdsd',
-              textDirection: pw.TextDirection.rtl,
-              style: myStyle,
-            ),
-            pw.SizedBox(height: 5),
             pw.Container(
-              color: PdfColors.black,
+              color: null,
               child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.center,
                 children: orderItemsHeader,
               ),
             ),
@@ -171,20 +163,28 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
         height: 20,
         padding: const pw.EdgeInsets.symmetric(horizontal: 5),
         color: PdfColors.black,
-        child: pw.Text(
-          '2222  تومان',
-          textDirection: pw.TextDirection.rtl,
-          style: myStyle.copyWith(
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColors.white,
-          ),
+        child: pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
+          children: [
+            pw.Text(
+              '2222  ریال',
+              textDirection: pw.TextDirection.rtl,
+              style: myStyle.copyWith(
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.white,
+              ),
+            ),
+            pw.Text(
+              'مبلغ قابل پرداخت: ',
+              textDirection: pw.TextDirection.rtl,
+              style: myStyle.copyWith(
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.white,
+              ),
+            ),
+          ],
         ),
       ),
-    ),
-    pw.Text(
-      'پرداخت شده',
-      textDirection: pw.TextDirection.rtl,
-      style: myStyle.copyWith(fontWeight: pw.FontWeight.bold),
     ),
   ];
 
@@ -200,39 +200,27 @@ Future<Uint8List> printReceipt({required Receipt order}) async {
       pageFormat: PdfPageFormat.roll80,
       margin: pw.EdgeInsets.zero,
       build: (context) {
-        return pw.Row(
-          children: [
-            pw.Expanded(
-              flex: 6,
-              child: pw.Container(
-                margin: const pw.EdgeInsets.only(right: 25),
-                child: pw.Column(
-                  children: [
-                    pw.Container(
-                      decoration: pw.BoxDecoration(
-                        border: pw.Border.all(color: PdfColors.black),
-                      ),
-                      child: pw.ListView(
-                        children: [
-                          _body(),
-                          pw.SizedBox(height: 5),
-                          _totalPrice(),
-                        ],
-                      ),
-                    ),
-                    pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 5),
-                      child: pw.Text(
-                        'از خرید شما متشکریم',
-                        textDirection: pw.TextDirection.rtl,
-                        style: myStyle.copyWith(fontSize: 10),
-                      ),
-                    ),
-                  ],
+        return pw.Expanded(
+          child: pw.Container(
+            margin: const pw.EdgeInsets.only(right: 25),
+            child: pw.Column(
+              children: [
+                pw.Text('sghl'),
+                pw.SizedBox(height: 5),
+                _body(),
+                pw.SizedBox(height: 5),
+                _totalPrice(),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                  child: pw.Text(
+                    'از خرید شما متشکریم',
+                    textDirection: pw.TextDirection.rtl,
+                    style: myStyle.copyWith(fontSize: 10),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         );
       },
     ),
