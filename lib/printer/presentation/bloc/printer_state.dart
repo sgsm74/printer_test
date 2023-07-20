@@ -39,3 +39,12 @@ class ScanPrintersState extends PrinterState {
 }
 
 class StartPrintingState extends PrinterState {}
+
+class SocketConnectionSuccessfulState extends PrinterState {
+  const SocketConnectionSuccessfulState({
+    required this.stream,
+  });
+  final Stream<Receipt> stream;
+  @override
+  List<Object> get props => [stream];
+}

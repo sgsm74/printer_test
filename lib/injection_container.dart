@@ -11,6 +11,7 @@ import 'package:printer_test/printer/domain/usecases/delete_printer.dart';
 import 'package:printer_test/printer/domain/usecases/get_printers.dart';
 import 'package:printer_test/printer/domain/usecases/save_printers.dart';
 import 'package:printer_test/printer/domain/usecases/scan_printers.dart';
+import 'package:printer_test/printer/domain/usecases/socket_connection.dart';
 import 'package:printer_test/printer/domain/usecases/start_printing.dart';
 import 'package:printer_test/printer/presentation/bloc/printer_bloc.dart';
 import 'package:queue/queue.dart';
@@ -46,6 +47,7 @@ void _injectPrinter() {
       scanPrinters: sl(),
       deletePrinter: sl(),
       startPrinting: sl(),
+      socketConnectionUseCase: sl(),
     ),
   );
   //usecases
@@ -54,6 +56,8 @@ void _injectPrinter() {
   sl.registerLazySingleton(() => ScanPrinters(repository: sl()));
   sl.registerLazySingleton(() => StartPrinting(repository: sl()));
   sl.registerLazySingleton(() => DeletePrinter(repository: sl()));
+  sl.registerLazySingleton(() => SocketConnection(repository: sl()));
+
   //repository
   sl.registerLazySingleton<PrinterRepository>(
     () => PrinterRepositoryImpl(localDataSource: sl(), networkDatasource: sl()),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:printer_test/core/utils/pdf_generator.dart';
 import 'package:printer_test/core/utils/utils.dart';
 import 'package:printer_test/printer/domain/entities/business_printers.dart';
 import 'package:printer_test/printer/presentation/pages/printers_management_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'printer/presentation/bloc/printer_bloc.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -121,33 +119,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _startPrinting(BuildContext context) async {
-    final doc = pw.Document();
-    var font = await rootBundle.load('assets/fonts/Dana-FaNum-Regular.ttf');
-    var myFont = pw.Font.ttf(font);
-
-    var myStyle = pw.TextStyle(fontSize: 9, font: myFont);
-    doc.addPage(
-      pw.Page(
-        pageFormat: PdfPageFormat.roll80,
-        build: (context) {
-          return pw.Center(
-            child: pw.Text(
-              textEditingController.text,
-              textDirection: pw.TextDirection.rtl,
-              style: myStyle,
-            ),
-          );
-        },
-      ),
-    );
     if (addedPrinters.isEmpty) {
       setState(() {
         printerError = 'There is no printer';
       });
     }
+    final sd = await printReceipt();
     for (var printer in addedPrinters) {
       BlocProvider.of<PrinterBloc>(context)
-          .add(StartPrintingEvent(printer: printer, pdf: await doc.save()));
+          .add(StartPrintingEvent(printer: printer, pdf: sd));
     }
   }
 }

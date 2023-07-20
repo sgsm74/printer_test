@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
+import 'package:printer_test/printer/domain/entities/receipt.dart';
 
 import '../../../core/errors/errors.dart';
 import '../../../core/errors/exceptions.dart';
@@ -103,5 +105,15 @@ class PrinterRepositoryImpl extends PrinterRepository {
         DbFailure(message: 'Delete printer failed'),
       );
     }
+  }
+
+  @override
+  Future<Either<Failure, Stream<Receipt>>> socketConnection(
+      String ip, String port) async {
+    StreamController<Receipt> controller = StreamController.broadcast();
+    networkDatasource.socketConnection(ip, port).listen((receipt) {
+      controller.add(receipt);
+    });
+    return Right(controller.stream);
   }
 }
