@@ -23,7 +23,7 @@ class _AddPrinterDialogState extends State<AddPrinterDialog> {
 
   @override
   void initState() {
-    controller.text = widget.printer.usecaseName ?? '';
+    controller.text = widget.printer.usecaseName;
     super.initState();
   }
 
