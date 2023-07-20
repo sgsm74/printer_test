@@ -188,6 +188,100 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
     ),
   ];
 
+  List<pw.Widget> header = [
+    pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      children: [
+        pw.Text('شاین',
+            style:
+                myStyle.copyWith(font: myFont, fontWeight: pw.FontWeight.bold)),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text('شماره فاکتور: 1212',
+                style: myStyle.copyWith(font: myFont)),
+            pw.Text('فروشگاه رضا', style: myStyle.copyWith(font: myFont)),
+          ],
+        ),
+        pw.SizedBox(height: 8),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text('1402/07/10', style: myStyle.copyWith(font: myFont)),
+            pw.Text('021-46656565', style: myStyle.copyWith(font: myFont)),
+          ],
+        ),
+        pw.SizedBox(height: 8),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text('22:32', style: myStyle.copyWith(font: myFont)),
+            pw.Text('تهران فردوسی', style: myStyle.copyWith(font: myFont)),
+          ],
+        ),
+      ],
+    ),
+  ];
+
+  List<pw.Widget> prices = [
+    pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.start,
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('20000', style: myStyle.copyWith(font: myFont)),
+                pw.Text(
+                  'جمع کل بدون تخفیف: ',
+                  style: myStyle.copyWith(font: myFont),
+                ),
+              ],
+            ),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('20000', style: myStyle.copyWith(font: myFont)),
+                pw.Text(
+                  'مجموع تخفیف ها: ',
+                  style: myStyle.copyWith(font: myFont),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    ),
+  ];
+  pw.Widget _prices() {
+    return pw.Container(
+      decoration: pw.BoxDecoration(border: pw.Border.all()),
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: pw.Directionality(
+          textDirection: pw.TextDirection.rtl, child: pw.Row(children: prices)),
+    );
+  }
+
+  pw.Widget _header() {
+    return pw.Container(
+      decoration: pw.BoxDecoration(border: pw.Border.all()),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: pw.Directionality(
+        textDirection: pw.TextDirection.rtl,
+        child: pw.Column(
+          children: header,
+        ),
+      ),
+    );
+  }
+
   pw.Widget _totalPrice() {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -205,9 +299,11 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
             margin: const pw.EdgeInsets.only(right: 25),
             child: pw.Column(
               children: [
-                pw.Text('sghl'),
+                pw.SizedBox(height: 5),
+                _header(),
                 pw.SizedBox(height: 5),
                 _body(),
+                _prices(),
                 pw.SizedBox(height: 5),
                 _totalPrice(),
                 pw.Container(
