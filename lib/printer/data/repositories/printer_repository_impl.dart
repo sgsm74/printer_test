@@ -24,8 +24,7 @@ class PrinterRepositoryImpl extends PrinterRepository {
     try {
       return Right(await localDataSource.getPrinters());
     } on HiveException catch (_) {
-      return const Left(
-          DbFailure(message: 'loc!.application.printer_not_exist'));
+      return const Left(DbFailure(message: 'There is no printer'));
     }
   }
 
@@ -37,8 +36,7 @@ class PrinterRepositoryImpl extends PrinterRepository {
       await localDataSource.savePrinters(printer);
       return Right(OK());
     } on HiveException catch (_) {
-      return const Left(
-          DbFailure(message: 'loc!.application.printer_not_exist'));
+      return const Left(DbFailure(message: 'There is no printer'));
     }
   }
 
@@ -87,7 +85,7 @@ class PrinterRepositoryImpl extends PrinterRepository {
         return Right(OK());
       } else {
         throw const PrinterException(
-          message: 'loc!.application.printer_not_connected',
+          message: 'There is no connected printer',
         );
       }
     } on PrinterException catch (e) {
@@ -102,7 +100,7 @@ class PrinterRepositoryImpl extends PrinterRepository {
       return Right(OK());
     } on HiveException catch (_) {
       return const Left(
-        DbFailure(message: 'loc!.application.error_delete_print_operation'),
+        DbFailure(message: 'Delete printer failed'),
       );
     }
   }

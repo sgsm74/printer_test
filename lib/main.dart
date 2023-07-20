@@ -19,7 +19,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -83,6 +82,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<BusinessPrinters> addedPrinters = [];
   final textEditingController = TextEditingController();
+  String printerError = '';
   @override
   void initState() {
     getPrinters(context, addedPrinters);
@@ -108,7 +108,11 @@ class _MainPageState extends State<MainPage> {
               ),
               ElevatedButton(
                   onPressed: () => _startPrinting(context),
-                  child: const Text('Print'))
+                  child: const Text('Print')),
+              Text(
+                printerError,
+                style: const TextStyle(color: Colors.red),
+              )
             ],
           ),
         );
@@ -136,6 +140,11 @@ class _MainPageState extends State<MainPage> {
         },
       ),
     );
+    if (addedPrinters.isEmpty) {
+      setState(() {
+        printerError = 'There is no printer';
+      });
+    }
     for (var printer in addedPrinters) {
       BlocProvider.of<PrinterBloc>(context)
           .add(StartPrintingEvent(printer: printer, pdf: await doc.save()));
