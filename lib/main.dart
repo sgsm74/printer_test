@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printer_test/core/utils/utils.dart';
 import 'package:printer_test/printer/domain/entities/business_printers.dart';
@@ -121,11 +122,21 @@ class _MainPageState extends State<MainPage> {
 
   void _startPrinting(BuildContext context) async {
     final doc = pw.Document();
+    var font = await rootBundle.load('assets/fonts/Dana-FaNum-Regular.ttf');
+    var myFont = pw.Font.ttf(font);
+
+    var myStyle = pw.TextStyle(fontSize: 9, font: myFont);
     doc.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.roll80,
         build: (context) {
-          return pw.Center(child: pw.Text(textEditingController.text));
+          return pw.Center(
+            child: pw.Text(
+              textEditingController.text,
+              textDirection: pw.TextDirection.rtl,
+              style: myStyle,
+            ),
+          );
         },
       ),
     );
