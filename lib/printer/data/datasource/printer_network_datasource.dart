@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
 import 'package:printer_test/printer/data/model/receipt_model.dart';
 import 'package:printing/printing.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 abstract class PrinterNetworkDatasource {
   Future<List<Printer>> startScanUsbPrinters();
@@ -28,9 +32,16 @@ class PrinterNetworkDatasourceImp implements PrinterNetworkDatasource {
 
   @override
   Stream<ReceiptModel> socketConnection(String ip, String port) async* {
-    final channel = IOWebSocketChannel.connect('ws://$ip:$port');
-    await for (var data in channel.stream) {
-      yield ReceiptModel.fromJson(data);
+    try {
+      final channel = IOWebSocketChannel.connect('ws://$ip:$port');
+      await for (var data in channel.stream) {
+        log(data);
+        yield ReceiptModel.fromJson(json.decode(data));
+      }
+    } on WebSocketChannelException catch (e) {
+      throw WebSocketChannelException(e.message);
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
     }
   }
 }

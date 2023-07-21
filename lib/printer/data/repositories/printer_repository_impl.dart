@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
 import 'package:printer_test/printer/domain/entities/receipt.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../core/errors/errors.dart';
 import '../../../core/errors/exceptions.dart';
@@ -110,10 +111,16 @@ class PrinterRepositoryImpl extends PrinterRepository {
   @override
   Future<Either<Failure, Stream<Receipt>>> socketConnection(
       String ip, String port) async {
-    StreamController<Receipt> controller = StreamController.broadcast();
-    networkDatasource.socketConnection(ip, port).listen((receipt) {
-      controller.add(receipt);
-    });
-    return Right(controller.stream);
+    try {
+      StreamController<Receipt> controller = StreamController.broadcast();
+      networkDatasource.socketConnection(ip, port).listen((receipt) {
+        controller.add(receipt);
+      });
+      return Right(controller.stream);
+    } on WebSocketChannelException catch (e) {
+      return Left(SocketFailure(message: e.message ?? 'Socket Exception'));
+    } on SocketException catch (e) {
+      return Left(SocketFailure(message: e.message));
+    }
   }
 }

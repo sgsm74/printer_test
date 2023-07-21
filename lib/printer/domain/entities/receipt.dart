@@ -25,5 +25,15 @@ class Receipt extends Equatable {
   final List<OrderItem> items;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        vendorName,
+        vendorAddress,
+        date,
+        time,
+        number,
+        totalDiscount,
+        totalAmount,
+        totalPayableAmount,
+        items
+      ];
 }
