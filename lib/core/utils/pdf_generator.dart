@@ -199,25 +199,26 @@ Future<Uint8List> printReceipt({required Receipt receipt}) async {
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text('شماره فاکتور: 1212',
+            pw.Text('شماره فاکتور: ${receipt.number}',
                 style: myStyle.copyWith(font: myFont)),
-            pw.Text('فروشگاه رضا', style: myStyle.copyWith(font: myFont)),
+            pw.Text(receipt.vendorName, style: myStyle.copyWith(font: myFont)),
           ],
         ),
         pw.SizedBox(height: 8),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text('1402/07/10', style: myStyle.copyWith(font: myFont)),
-            pw.Text('021-46656565', style: myStyle.copyWith(font: myFont)),
+            pw.Text(receipt.date, style: myStyle.copyWith(font: myFont)),
+            pw.Text('021-111111', style: myStyle.copyWith(font: myFont)),
           ],
         ),
         pw.SizedBox(height: 8),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            pw.Text('22:32', style: myStyle.copyWith(font: myFont)),
-            pw.Text('تهران فردوسی', style: myStyle.copyWith(font: myFont)),
+            pw.Text(receipt.time, style: myStyle.copyWith(font: myFont)),
+            pw.Text(receipt.vendorAddress,
+                style: myStyle.copyWith(font: myFont)),
           ],
         ),
       ],
@@ -237,7 +238,8 @@ Future<Uint8List> printReceipt({required Receipt receipt}) async {
               mainAxisAlignment: pw.MainAxisAlignment.start,
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text('20000', style: myStyle.copyWith(font: myFont)),
+                pw.Text('${receipt.totalAmount}',
+                    style: myStyle.copyWith(font: myFont)),
                 pw.Text(
                   'جمع کل بدون تخفیف: ',
                   style: myStyle.copyWith(font: myFont),
@@ -248,9 +250,10 @@ Future<Uint8List> printReceipt({required Receipt receipt}) async {
               mainAxisAlignment: pw.MainAxisAlignment.start,
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text('20000', style: myStyle.copyWith(font: myFont)),
+                pw.Text('${receipt.totalDiscount}',
+                    style: myStyle.copyWith(font: myFont)),
                 pw.Text(
-                  'مجموع تخفیف ها: ',
+                  'مجموع تخفیف‌ها: ',
                   style: myStyle.copyWith(font: myFont),
                 ),
               ],

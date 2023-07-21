@@ -1,11 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:printer_test/core/utils/pdf_generator.dart';
-import 'package:printer_test/core/utils/utils.dart';
-import 'package:printer_test/printer/domain/entities/business_printers.dart';
-import 'package:printer_test/printer/domain/entities/receipt.dart';
+import 'package:printer_test/printer/presentation/pages/main_page.dart';
 import 'package:printer_test/printer/presentation/pages/printers_management_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
@@ -23,12 +18,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Printing Test',
+      title: 'Printing',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        fontFamily: 'Dana',
       ),
-      home: const MyHomePage(title: 'Printing Test'),
+      home: const MyHomePage(title: 'Printing'),
     );
   }
 }
@@ -70,93 +66,5 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  List<BusinessPrinters> addedPrinters = [];
-  final textEditingController = TextEditingController();
-  String printerError = '';
-  String ip = '127.0.0.1';
-  String port = '8080';
-  StreamController? streamController;
-  @override
-  void initState() {
-    getPrinters(context, addedPrinters);
-    BlocProvider.of<PrinterBloc>(context)
-        .add(SocketConnectionEvent(ip: ip, port: port));
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<PrinterBloc, PrinterState>(
-      listener: (context, state) {
-        if (state is GetPrintersState) {
-          addedPrinters = state.printers;
-        } else if (state is PrintersError) {
-        } else if (state is SocketConnectionSuccessfulState) {
-          state.stream.asBroadcastStream().listen((receipt) {
-            print(receipt);
-            _startPrinting(context, receipt);
-          });
-        }
-      },
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-          child: Column(
-            children: [
-              if (state is SocketConnectionSuccessfulState)
-                Expanded(
-                  child: StreamBuilder<Receipt>(
-                    stream: state.stream,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      return Text(snapshot.requireData.toString());
-                    },
-                  ),
-                ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: textEditingController,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Print Test'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _startPrinting(BuildContext context, Receipt receipt) async {
-    if (addedPrinters.isEmpty) {
-      setState(() {
-        printerError = 'There is no printer';
-      });
-    }
-    final sd = await printReceipt(receipt: receipt);
-    for (var printer in addedPrinters) {
-      BlocProvider.of<PrinterBloc>(context)
-          .add(StartPrintingEvent(printer: printer, pdf: sd));
-    }
   }
 }
