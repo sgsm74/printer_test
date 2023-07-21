@@ -1,9 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:printer_test/printer/domain/entities/item.dart';
 import 'package:printer_test/printer/domain/entities/receipt.dart';
 
-Future<Uint8List> printReceipt({Receipt? order}) async {
+Future<Uint8List> printReceipt({required Receipt receipt}) async {
   var font = await rootBundle.load('assets/fonts/Dana-FaNum-Regular.ttf');
   var myFont = pw.Font.ttf(font);
   var myStyle = pw.TextStyle(
@@ -57,13 +58,13 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
   ];
 
   /// Genertate items
-  itemsList() {
+  itemsList(OrderItem item) {
     List<pw.Widget> itemBuilderList = [
       pw.Container(
         width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
-          '20000',
+          '${item.totalAmount}',
           style: myStyle,
           textDirection: pw.TextDirection.rtl,
         ),
@@ -72,7 +73,7 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
         width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
-          '20000',
+          '${item.discount}',
           style: myStyle,
           textDirection: pw.TextDirection.rtl,
         ),
@@ -81,7 +82,7 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
         width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
-          '20000',
+          '${item.unitPrice}',
           style: myStyle,
           textDirection: pw.TextDirection.rtl,
         ),
@@ -90,7 +91,7 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
         width: PdfPageFormat.roll80.width / 7,
         alignment: pw.Alignment.center,
         child: pw.Text(
-          '1',
+          '${item.quantity}',
           style: myStyle,
           textDirection: pw.TextDirection.rtl,
         ),
@@ -101,7 +102,7 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
         child: pw.Column(
           children: [
             pw.Text(
-              'name',
+              item.name,
               textDirection: pw.TextDirection.rtl,
               style: myStyle.copyWith(font: myFont),
             ),
@@ -117,14 +118,14 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
   List<pw.Widget> _itemsBuilder() {
     List<pw.Widget> items = [];
 
-    for (int i = 0; i < 3; i++) {
+    for (final item in receipt.items) {
       items.add(
         pw.Container(
           decoration: pw.BoxDecoration(border: pw.Border.all()),
           child: pw.Column(
             children: [
               pw.Row(
-                children: itemsList(),
+                children: itemsList(item),
               ),
             ],
           ),
@@ -167,7 +168,7 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
           mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
             pw.Text(
-              '2222  ریال',
+              '${receipt.totalPayableAmount}  ریال',
               textDirection: pw.TextDirection.rtl,
               style: myStyle.copyWith(
                 fontWeight: pw.FontWeight.bold,
@@ -205,7 +206,6 @@ Future<Uint8List> printReceipt({Receipt? order}) async {
             margin: const pw.EdgeInsets.only(right: 25),
             child: pw.Column(
               children: [
-                pw.Text('sghl'),
                 pw.SizedBox(height: 5),
                 _body(),
                 pw.SizedBox(height: 5),

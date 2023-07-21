@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
@@ -30,7 +31,8 @@ class PrinterNetworkDatasourceImp implements PrinterNetworkDatasource {
   Stream<ReceiptModel> socketConnection(String ip, String port) async* {
     final channel = IOWebSocketChannel.connect('ws://$ip:$port');
     await for (var data in channel.stream) {
-      yield ReceiptModel.fromJson(data);
+      print(data);
+      yield ReceiptModel.fromJson(json.decode(data));
     }
   }
 }
