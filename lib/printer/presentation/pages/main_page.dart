@@ -17,15 +17,17 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<BusinessPrinters> addedPrinters = [];
-  final textEditingController = TextEditingController();
-  String printerError = '', ip = '127.0.0.1', port = '8080';
+  final textEditingController = TextEditingController(),
+      ipController = TextEditingController(text: '127.0.0.1'),
+      portController = TextEditingController(text: '8080');
+  String printerError = '';
   StreamController? streamController;
   List<Receipt> receipts = [];
   @override
   void initState() {
     getPrinters(context, addedPrinters);
-    BlocProvider.of<PrinterBloc>(context)
-        .add(SocketConnectionEvent(ip: ip, port: port));
+    //BlocProvider.of<PrinterBloc>(context)
+    //    .add(SocketConnectionEvent(ip: ip, port: port));
     super.initState();
   }
 
@@ -53,6 +55,7 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               children: [
                 Expanded(
+                  flex: 2,
                   child: ListView.builder(
                     itemCount: receipts.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -81,7 +84,55 @@ class _MainPageState extends State<MainPage> {
                     },
                   ),
                 ),
-
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: ipController,
+                              textDirection: TextDirection.ltr,
+                              decoration: const InputDecoration(
+                                label: Text('IP'),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: portController,
+                              textDirection: TextDirection.ltr,
+                              decoration: const InputDecoration(
+                                label: Text('Port'),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              BlocProvider.of<PrinterBloc>(context).add(
+                                SocketConnectionEvent(
+                                  ip: ipController.text,
+                                  port: portController.text,
+                                ),
+                              );
+                            },
+                            child: const Text('Socket connection'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // Expanded(
                 //   child: Row(
                 //     children: [
