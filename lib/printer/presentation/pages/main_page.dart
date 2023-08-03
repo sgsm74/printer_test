@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +27,12 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     getPrinters(context, addedPrinters);
-    //BlocProvider.of<PrinterBloc>(context)
-    //    .add(SocketConnectionEvent(ip: ip, port: port));
+    BlocProvider.of<PrinterBloc>(context).add(
+      SocketConnectionEvent(
+        ip: ipController.text,
+        port: portController.text,
+      ),
+    );
     super.initState();
   }
 
@@ -35,13 +40,18 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<PrinterBloc, PrinterState>(
       listener: (context, state) {
-        print(state);
         if (state is GetPrintersState) {
           addedPrinters = state.printers;
         } else if (state is PrintersError) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Error'),
+              content: Text(state.message),
+            ),
+          );
         } else if (state is SocketConnectionSuccessfulState) {
           state.stream.asBroadcastStream().listen((receipt) {
-            print(receipt);
             receipts.add(receipt);
             _startPrinting(context, receipt);
           });
@@ -84,55 +94,55 @@ class _MainPageState extends State<MainPage> {
                     },
                   ),
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: ipController,
-                              textDirection: TextDirection.ltr,
-                              decoration: const InputDecoration(
-                                label: Text('IP'),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              controller: portController,
-                              textDirection: TextDirection.ltr,
-                              decoration: const InputDecoration(
-                                label: Text('Port'),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              BlocProvider.of<PrinterBloc>(context).add(
-                                SocketConnectionEvent(
-                                  ip: ipController.text,
-                                  port: portController.text,
-                                ),
-                              );
-                            },
-                            child: const Text('Socket connection'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   child: Align(
+                //     alignment: Alignment.bottomCenter,
+                //     child: Directionality(
+                //       textDirection: TextDirection.ltr,
+                //       child: Row(
+                //         children: [
+                //           Expanded(
+                //             child: TextFormField(
+                //               controller: ipController,
+                //               textDirection: TextDirection.ltr,
+                //               decoration: const InputDecoration(
+                //                 label: Text('IP'),
+                //                 border: OutlineInputBorder(),
+                //               ),
+                //             ),
+                //           ),
+                //           const SizedBox(
+                //             width: 20,
+                //           ),
+                //           Expanded(
+                //             child: TextFormField(
+                //               controller: portController,
+                //               textDirection: TextDirection.ltr,
+                //               decoration: const InputDecoration(
+                //                 label: Text('Port'),
+                //                 border: OutlineInputBorder(),
+                //               ),
+                //             ),
+                //           ),
+                //           const SizedBox(
+                //             width: 20,
+                //           ),
+                //           ElevatedButton(
+                //             onPressed: () {
+                //               BlocProvider.of<PrinterBloc>(context).add(
+                //                 SocketConnectionEvent(
+                //                   ip: ipController.text,
+                //                   port: portController.text,
+                //                 ),
+                //               );
+                //             },
+                //             child: const Text('Socket connection'),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 // Expanded(
                 //   child: Row(
                 //     children: [
