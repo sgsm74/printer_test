@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printer_test/printer/data/model/receipt_model.dart';
 import 'package:printing/printing.dart';
@@ -33,17 +31,11 @@ class PrinterNetworkDatasourceImp implements PrinterNetworkDatasource {
 
   @override
   Stream<ReceiptModel> socketConnection(String ip, String port) async* {
-    final appDirectory = Directory(Directory.current.path);
     try {
       final channel = IOWebSocketChannel.connect('ws://$ip:$port');
       await for (var data in channel.stream) {
-        final file = File('${appDirectory.path}/Errorlog.txt')
-            .openWrite(mode: FileMode.append);
-        file.writeln(data);
-        file.writeln(json.encode(data));
-        file.close();
         log(data);
-        yield ReceiptModel.fromJson(data);
+        yield ReceiptModel.fromJson(json.decode(data));
       }
     } on WebSocketChannelException catch (e) {
       throw WebSocketChannelException(e.message);
