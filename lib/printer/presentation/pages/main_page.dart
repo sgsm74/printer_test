@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   List<BusinessPrinters> addedPrinters = [];
   final textEditingController = TextEditingController(),
       ipController = TextEditingController(text: '127.0.0.1'),
-      portController = TextEditingController(text: '8080');
+      portController = TextEditingController(text: '8000');
   String printerError = '';
   StreamController? streamController;
   List<Receipt> receipts = [];
