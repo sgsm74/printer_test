@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:printer_test/printer/presentation/pages/main_page.dart';
 import 'package:printer_test/printer/presentation/pages/printers_management_page.dart';
 import 'injection_container.dart' as di;
@@ -8,6 +12,13 @@ import 'printer/presentation/bloc/printer_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  launchAtStartup.setup(
+    appName: packageInfo.appName,
+    appPath: Platform.resolvedExecutable,
+  );
+  await launchAtStartup.enable();
   await di.init();
   runApp(const MyApp());
 }
