@@ -93,63 +93,63 @@ class _MainPageState extends State<MainPage> {
                     },
                   ),
                 ),
-                // Expanded(
-                //   child: Align(
-                //     alignment: Alignment.bottomCenter,
-                //     child: Directionality(
-                //       textDirection: TextDirection.ltr,
-                //       child: Row(
-                //         children: [
-                //           Expanded(
-                //             child: TextFormField(
-                //               controller: ipController,
-                //               textDirection: TextDirection.ltr,
-                //               decoration: const InputDecoration(
-                //                 label: Text('IP'),
-                //                 border: OutlineInputBorder(),
-                //               ),
-                //             ),
-                //           ),
-                //           const SizedBox(
-                //             width: 20,
-                //           ),
-                //           Expanded(
-                //             child: TextFormField(
-                //               controller: portController,
-                //               textDirection: TextDirection.ltr,
-                //               decoration: const InputDecoration(
-                //                 label: Text('Port'),
-                //                 border: OutlineInputBorder(),
-                //               ),
-                //             ),
-                //           ),
-                //           const SizedBox(
-                //             width: 20,
-                //           ),
-                //           ElevatedButton(
-                //             onPressed: () {
-                //               BlocProvider.of<PrinterBloc>(context).add(
-                //                 SocketConnectionEvent(
-                //                   ip: ipController.text,
-                //                   port: portController.text,
-                //                 ),
-                //               );
-                //             },
-                //             child: const Text('Socket connection'),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: ipController,
+                              textDirection: TextDirection.ltr,
+                              decoration: const InputDecoration(
+                                label: Text('IP'),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: portController,
+                              textDirection: TextDirection.ltr,
+                              decoration: const InputDecoration(
+                                label: Text('Port'),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              BlocProvider.of<PrinterBloc>(context).add(
+                                SocketConnectionEvent(
+                                  ip: ipController.text,
+                                  port: portController.text,
+                                ),
+                              );
+                            },
+                            child: const Text('Connect'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // Expanded(
                 //   child: Row(
                 //     children: [
                 //       Expanded(
                 //         child: TextFormField(
                 //           controller: textEditingController,
-                //           decoration:
-                //               const InputDecoration(border: OutlineInputBorder()),
+                //           decoration: const InputDecoration(
+                //               border: OutlineInputBorder()),
                 //         ),
                 //       ),
                 //       ElevatedButton(
